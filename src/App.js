@@ -5,17 +5,22 @@ import './index.css';
 
 function App() {
   const [posts, setPosts] = useState([]);
+  const [randomFeaturedPostIndex, setRandomFeaturedPostIndex] = useState(null);
 
   useEffect(() => {
-    // Faz a requisição para a API
     axios.get('https://api-rest-post-diegocandido.herokuapp.com/postagens/')
       .then(response => {
         setPosts(response.data);
+
+        // Gere um número aleatório entre 0 e 6 (inclusive)
+        const randomIndex = Math.floor(Math.random() * 7);
+        setRandomFeaturedPostIndex(randomIndex);
       })
       .catch(error => {
         console.error('Erro ao buscar dados da API:', error);
       });
   }, []);
+  
   return (
     <div>
       <nav className="row col-md-10 mx-auto navbar navbar-expand-lg container pt-4 border-bottom">
@@ -54,18 +59,20 @@ function App() {
       
       <main className="container">
       <section className="p-4 col-md-10 mx-auto sdestaques" id="Destaques">
-      <div className="card text-bg-dark rounded-4">
-        <div className="position-relative">
-          <img src="./midias/RTX-4090-Ti.jpg" className="card-img rounded-4" alt="..." />
-          <div className="carddestaque card-img-overlay d-flex flex-column justify-content-end">
-            <div className="text-center" style={{ backgroundColor: '#4B6BFB', borderRadius: '6px', width: '8vh' }}>
-              <p className="card-title d-flex justify-content-center" style={{ fontSize: '10px' }}>Technology</p>
+        {randomFeaturedPostIndex !== null && (
+          <div key={posts[randomFeaturedPostIndex].id} className="card text-bg-dark rounded-4">
+            <div className="position-relative" style={{ height: '60vh', overflow: 'hidden' }}>
+              <img src={`https://api-rest-post-diegocandido.herokuapp.com${posts[randomFeaturedPostIndex].thumbImage}`} className="card-img rounded-4" alt={posts[randomFeaturedPostIndex].thumbImageAltText} style={{ height: '100%', objectFit: 'cover' }}/>
+              <div className="carddestaque card-img-overlay d-flex flex-column justify-content-end">
+                <div className="text-center" style={{ backgroundColor: '#4B6BFB', borderRadius: '6px', width: '8vh' }}>
+                  <p className="card-title d-flex justify-content-center" style={{ fontSize: '10px' }}>{posts[randomFeaturedPostIndex].thumbImageAltText}</p>
+                </div>
+                <p className="card-text">{posts[randomFeaturedPostIndex].description}</p>
+                <p className="card-text"><small>{posts[randomFeaturedPostIndex].postDate}</small></p>
+              </div>
             </div>
-            <p className="card-text">Rumor de RTX 5000 ganha forças; se...</p>
-            <p className="card-text"><small>August 09, 2023</small></p>
           </div>
-        </div>
-      </div>
+        )}
       </section>
 
 
@@ -147,4 +154,3 @@ function App() {
 }
 
 export default App;
-
