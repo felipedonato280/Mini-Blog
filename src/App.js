@@ -6,13 +6,13 @@ import './index.css';
 function App() {
   const [posts, setPosts] = useState([]);
   const [randomFeaturedPostIndex, setRandomFeaturedPostIndex] = useState(null);
+  const [visiblePosts, setVisiblePosts] = useState(4);
 
   useEffect(() => {
     axios.get('https://api-rest-post-diegocandido.herokuapp.com/postagens/')
       .then(response => {
         setPosts(response.data);
 
-        // Gere um número aleatório entre 0 e 6 (inclusive)
         const randomIndex = Math.floor(Math.random() * 7);
         setRandomFeaturedPostIndex(randomIndex);
       })
@@ -20,6 +20,10 @@ function App() {
         console.error('Erro ao buscar dados da API:', error);
       });
   }, []);
+  
+  const handleLoadMore = () => {
+    setVisiblePosts(visiblePosts + 2);
+  };
   
   return (
     <div>
@@ -61,7 +65,7 @@ function App() {
       <section className="p-4 col-md-10 mx-auto sdestaques" id="Destaques">
         {randomFeaturedPostIndex !== null && (
           <div key={posts[randomFeaturedPostIndex].id} className="card text-bg-dark rounded-4">
-            <div className="position-relative" style={{ height: '60vh', overflow: 'hidden' }}>
+            <div className="position-relative" style={{ height: '500px', overflow: 'hidden' }}>
               <img src={`https://api-rest-post-diegocandido.herokuapp.com${posts[randomFeaturedPostIndex].thumbImage}`} className="card-img rounded-4" alt={posts[randomFeaturedPostIndex].thumbImageAltText} style={{ height: '100%', objectFit: 'cover' }}/>
               <div className="carddestaque card-img-overlay d-flex flex-column justify-content-end">
                 <div className="text-center" style={{ backgroundColor: '#4B6BFB', borderRadius: '6px', width: '8vh' }}>
@@ -75,19 +79,18 @@ function App() {
         )}
       </section>
 
-
       <section className="row p-4 d-flex justify-content-center" id="Posts">
-        {posts.slice(0, 4).map(post => (
+        {posts.slice(0, visiblePosts).map(post => (
           <div key={post.id} className="col-md-5">
-            <div className="card mb-4" style={{ maxWidth: '540px' }}>
+            <div className="card mb-4">
               <div className="row g-0">
                 <div className="col-md-4">
-                  <img src={`https://api-rest-post-diegocandido.herokuapp.com${post.thumbImage}`} className="img-fluid rounded-start-2"  alt={post.thumbImageAltText} />
+                  <img src={`https://api-rest-post-diegocandido.herokuapp.com${post.thumbImage}`} className="img-fluid rounded-start-2"  alt={post.thumbImageAltText} style={{ height: '100%', objectFit: 'cover'}} />
                 </div>
                 <div className="col-md-8">
                   <div className="card-body">
-                    <h5 className="card-title">{post.title}</h5>
-                    <p className="card-text">{post.description}</p>
+                    <h5 className="card-title">{post.title.length > 60 ? post.title.slice(0, 60) + '...' :post.title}</h5>
+                    <p className="card-text">{post.description.length > 100 ? post.description.slice(0, 90) + '...' : post.description}</p>
                     <p className="card-text"><small className="text-body-secondary">{post.postDate}</small></p>
                   </div>
                 </div>
@@ -98,11 +101,12 @@ function App() {
       </section>
 
 
-        <div className="row py-5">
-          <div className="text-center">
-            <button className="btn btn-danger w-25 h-100">Ver mais</button>
-          </div>
+      <div className="row py-5">
+        <div className="text-center">
+        <button className="btn btn-danger w-25 h-100" onClick={handleLoadMore}>Ver mais</button>
         </div>
+      </div>
+
       </main>
 
       <footer>
