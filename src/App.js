@@ -1,8 +1,21 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './index.css'; // Certifique-se de importar seus estilos personalizados
+import './index.css';
 
 function App() {
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    // Faz a requisição para a API
+    axios.get('https://api-rest-post-diegocandido.herokuapp.com/postagens/')
+      .then(response => {
+        setPosts(response.data);
+      })
+      .catch(error => {
+        console.error('Erro ao buscar dados da API:', error);
+      });
+  }, []);
   return (
     <div>
       <nav className="row col-md-10 mx-auto navbar navbar-expand-lg container pt-4 border-bottom">
@@ -56,72 +69,27 @@ function App() {
       </section>
 
 
-        <section className="row p-4 d-flex justify-content-center" id="Posts">
-        <div className="col-md-5">
-          <div className="card mb-4" style={{ maxWidth: '540px' }}>
-            <div className="row g-0">
-              <div className="col-md-4">
-                <img src="./midias/homi.webp" className="img-fluid rounded-start-2" style={{ height: '100%' }} alt="..." />
-              </div>
-              <div className="col-md-8">
-                <div className="card-body">
-                  <h5 className="card-title">Card title</h5>
-                  <p className="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                  <p className="card-text"><small className="text-body-secondary">Last updated 3 mins ago</small></p>
+      <section className="row p-4 d-flex justify-content-center" id="Posts">
+        {posts.slice(0, 4).map(post => (
+          <div key={post.id} className="col-md-5">
+            <div className="card mb-4" style={{ maxWidth: '540px' }}>
+              <div className="row g-0">
+                <div className="col-md-4">
+                  <img src={`https://api-rest-post-diegocandido.herokuapp.com${post.thumbImage}`} className="img-fluid rounded-start-2"  alt={post.thumbImageAltText} />
+                </div>
+                <div className="col-md-8">
+                  <div className="card-body">
+                    <h5 className="card-title">{post.title}</h5>
+                    <p className="card-text">{post.description}</p>
+                    <p className="card-text"><small className="text-body-secondary">{post.postDate}</small></p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        <div className="col-md-5">
-          <div className="card mb-4" style={{ maxWidth: '540px' }}>
-            <div className="row g-0">
-              <div className="col-md-4">
-                <img src="./midias/homi.webp" className="img-fluid rounded-start-2" style={{ height: '100%' }} alt="..." />
-              </div>
-              <div className="col-md-8">
-                <div className="card-body">
-                  <h5 className="card-title">Card title</h5>
-                  <p className="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                  <p className="card-text"><small className="text-body-secondary">Last updated 3 mins ago</small></p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="col-md-5">
-          <div className="card mb-4" style={{ maxWidth: '540px' }}>
-            <div className="row g-0">
-              <div className="col-md-4">
-                <img src="./midias/homi.webp" className="img-fluid rounded-start-2" style={{ height: '100%' }} alt="..." />
-              </div>
-              <div className="col-md-8">
-                <div className="card-body">
-                  <h5 className="card-title">Card title</h5>
-                  <p className="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                  <p className="card-text"><small className="text-body-secondary">Last updated 3 mins ago</small></p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="col-md-5">
-          <div className="card mb-4" style={{ maxWidth: '540px' }}>
-            <div className="row g-0">
-              <div className="col-md-4">
-                <img src="./midias/homi.webp" className="img-fluid rounded-start-2" style={{ height: '100%' }} alt="..." />
-              </div>
-              <div className="col-md-8">
-                <div className="card-body">
-                  <h5 className="card-title">Card title</h5>
-                  <p className="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                  <p className="card-text"><small className="text-body-secondary">Last updated 3 mins ago</small></p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        </section>
+        ))}
+      </section>
+
 
         <div className="row py-5">
           <div className="text-center">
