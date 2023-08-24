@@ -7,7 +7,7 @@ function App() {
   const [posts, setPosts] = useState([]);
   const [randomFeaturedPostIndex, setRandomFeaturedPostIndex] = useState(null);
   const [visiblePosts, setVisiblePosts] = useState(4);
-
+  
   useEffect(() => {
     axios.get('https://api-rest-post-diegocandido.herokuapp.com/postagens/')
       .then(response => {
@@ -63,8 +63,8 @@ function App() {
       
       <main className="container">
       <section className="p-4 col-md-10 mx-auto sdestaques" id="Destaques">
-        {randomFeaturedPostIndex !== null && (
-          <div key={posts[randomFeaturedPostIndex].id} className="card text-bg-dark rounded-4">
+        {Boolean(randomFeaturedPostIndex) && (
+          <div className="card text-bg-dark rounded-4">
             <div className="position-relative" style={{ height: '500px', overflow: 'hidden' }}>
               <img src={`https://api-rest-post-diegocandido.herokuapp.com${posts[randomFeaturedPostIndex].thumbImage}`} className="card-img rounded-4" alt={posts[randomFeaturedPostIndex].thumbImageAltText} style={{ height: '100%', objectFit: 'cover' }}/>
               <div className="carddestaque card-img-overlay d-flex flex-column justify-content-end">
@@ -80,8 +80,8 @@ function App() {
       </section>
 
       <section className="row p-4 d-flex justify-content-center" id="Posts">
-        {posts.slice(0, visiblePosts).map(post => (
-          <div key={post.id} className="col-md-5">
+        {posts.slice(0, visiblePosts).map((post, i) => (
+          <div key={i} className="col-md-5">
             <div className="card mb-4">
               <div className="row g-0">
                 <div className="col-md-4">
